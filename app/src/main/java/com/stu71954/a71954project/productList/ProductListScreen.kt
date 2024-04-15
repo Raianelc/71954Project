@@ -2,8 +2,10 @@ package com.stu71954.a71954project.productList
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -44,7 +47,7 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
 
     val categories by viewModel.categories.collectAsState()
     val products by viewModel.products.collectAsState()
-    //val userId = authViewModel.getCurrentUserId()
+    val userId = authViewModel.getCurrentUserId()
     var selectedCategory by remember { mutableStateOf("") }
 
     // Fetch the categories when the screen is displayed
@@ -77,33 +80,33 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
             )
         },
         bottomBar = {
-//            userId?.let {
-//                val cartCount = viewModel.cartCount.collectAsState()
-//                Row(
-//                    modifier = Modifier.fillMaxWidth(),
-//                    horizontalArrangement = Arrangement.SpaceEvenly
-//                ) {
-//                    Text(
-//                        text = "Cart: ${cartCount.value} items",
-//                        fontWeight = FontWeight.Bold,
-//                        fontSize = 18.sp
-//                    )
-//                    Button(onClick = { navController.navigate("orderHistory") }) {
-//                        Text("Orders")
-//                    }
-//                    Button(onClick = { navController.navigate("cartScreen") }) {
-//                        Text("Go to Cart")
-//                    }
-//                }
-//            }
+            userId?.let {
+                val cartCount = viewModel.cartCount.collectAsState()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Text(
+                        text = "Cart: ${cartCount.value} items",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                    Button(onClick = { navController.navigate("orderHistory") }) {
+                        Text("Orders")
+                    }
+                    Button(onClick = { navController.navigate("cartScreen") }) {
+                        Text("Go to Cart")
+                    }
+                }
+            }
         }
     ) { innerPadding ->
         val modifier = Modifier.padding(innerPadding)
 
         LazyColumn(modifier = modifier) {
             items(products) { product ->
-                ProductCard(product, { //selectedProduct ->
-//                    userId?.let { viewModel.addToCart(it, selectedProduct) }
+                ProductCard(product, { selectedProduct ->
+                    userId?.let { viewModel.addToCart(it, selectedProduct) }
                 }, navController)
             }
         }

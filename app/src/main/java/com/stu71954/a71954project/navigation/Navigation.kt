@@ -17,13 +17,15 @@ import com.stu71954.a71954project.signUp.SignUpScreen
 fun Navigation() {
     val auth = FirebaseAuth.getInstance()
     val navController = rememberNavController()
+    val appRepository = AppRepository()
 
     val sharedPref = LocalContext.current.getSharedPreferences("com.stu71954.a71954project.PREF", android.content.Context.MODE_PRIVATE)
 
-    val appViewModel = AppViewModel(AppRepository(), navController)
+    val appViewModel = AppViewModel(appRepository, navController)
     val authViewModel = AuthViewModel(auth, sharedPref)
 
-    val startDestination = "signup"
+    val startDestination = if (auth.currentUser != null) "productlistscreen" else "signup"
+
     NavHost(
         navController = navController,
         startDestination = startDestination)
