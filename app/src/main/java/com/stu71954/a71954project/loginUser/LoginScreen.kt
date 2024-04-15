@@ -1,4 +1,4 @@
-package com.stu71954.a71954project.LoginUser
+package com.stu71954.a71954project.loginUser
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -12,8 +12,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
-import com.stu71954.a71954project.Auth.AuthViewModel
-import com.stu71954.a71954project.Auth.AuthViewModelFactory
+import com.stu71954.a71954project.auth.AuthViewModel
+import com.stu71954.a71954project.auth.AuthViewModelFactory
 
 @Composable
 fun LoginScreen(navController: NavController) {

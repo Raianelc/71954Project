@@ -1,4 +1,4 @@
-package com.stu71954.a71954project.Auth
+package com.stu71954.a71954project.auth
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
@@ -77,6 +77,16 @@ class AuthViewModel(
                 _errorMessage.value = task.exception?.message
             }
         }
+    }
+
+    fun logout(navController: NavController) {
+        auth.signOut()
+        sharedPreferences.edit().remove("userID").apply()
+        navController.navigate("signup")
+    }
+
+    fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
     }
 
 }
