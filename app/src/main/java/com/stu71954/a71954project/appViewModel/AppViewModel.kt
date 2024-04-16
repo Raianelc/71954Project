@@ -27,6 +27,13 @@ class AppViewModel (private val repository: AppRepository, private val navContro
     private val _cartCount = MutableStateFlow<Int>(0)
     val cartCount: StateFlow<Int> = _cartCount
 
+    private val _product = MutableStateFlow<Product?>(null)
+    val product: StateFlow<Product?> = _product
+
+    fun getProduct(id: Int) {
+        viewModelScope.launch {
+            _product.value = products.value.find { it.id == id } }}
+
     init {
         getProducts()
         fetchCategories()
@@ -69,6 +76,12 @@ class AppViewModel (private val repository: AppRepository, private val navContro
                     description = jsonObject["description"]!!.jsonPrimitive.content
                 )
             }
+        }
+    }
+
+    fun fetchProductById(productId: Int) {
+        viewModelScope.launch {
+            _product.value = repository.fetchProductByIdFromApi(productId)
         }
     }
 

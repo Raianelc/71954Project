@@ -141,8 +141,8 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
                 modifier = Modifier.fillMaxWidth(),
                 contentScale = ContentScale.Crop
             )
-            Text(text = product.title, fontSize = 20.sp, modifier = Modifier.clickable { navController.navigate("productDetail/${product.id}") })
-            Text(text = product.price.toString(), fontSize = 16.sp, modifier = Modifier.clickable { navController.navigate("productDetail/${product.id}") })
+            Text(text = product.title, fontSize = 20.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
+            Text(text = product.price.toString(), fontSize = 16.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
             Button(onClick = { onAddToCartClick(product) }) {
                 Text("Add to Cart")
             }
