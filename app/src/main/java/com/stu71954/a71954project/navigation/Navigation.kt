@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.stu71954.a71954project.aboutThisApp.AboutThisAppScreen
 import com.stu71954.a71954project.appRepository.AppRepository
 import com.stu71954.a71954project.appViewModel.AppViewModel
 import com.stu71954.a71954project.auth.AuthViewModel
@@ -16,6 +17,7 @@ import com.stu71954.a71954project.productList.ProductDetailScreen
 import com.stu71954.a71954project.productList.ProductListScreen
 import com.stu71954.a71954project.shopCart.CartScreen
 import com.stu71954.a71954project.signUp.SignUpScreen
+import com.stu71954.a71954project.userProfile.UserScreenProfile
 
 @Composable
 fun Navigation() {
@@ -62,9 +64,19 @@ fun Navigation() {
         composable("orderDT/{orderId}") { backStackEntry ->
             val orderId = backStackEntry.arguments?.getString("orderId")
             if (orderId != null) {
-                OrderDT(orderId, appViewModel)
+                OrderDT(orderId, navController, appViewModel)
             }
 
+        }
+
+        composable("userProfile/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")
+            if (userId != null) {
+                UserScreenProfile(userId, appViewModel, navController)
+            }
+        }
+        composable ("aboutThisApp") {
+            AboutThisAppScreen(navController = navController)
         }
     }
 }

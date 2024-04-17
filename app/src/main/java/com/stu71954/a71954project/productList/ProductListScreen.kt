@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -74,8 +75,11 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
                     )
                 },
                 actions = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { authViewModel.logout(navController) }) {
                         Icon(Icons.Filled.ExitToApp, contentDescription = "Logout")
+                    }
+                    IconButton(onClick = { navController.navigate("userProfile/${authViewModel.getCurrentUserId()}") }) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "User Details")
                     }
                 }
             )
@@ -139,7 +143,9 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
             Image(
                 painter = rememberImagePainter(product.image),
                 contentDescription = product.title,
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
                 contentScale = ContentScale.Crop
             )
             Text(text = product.title, fontSize = 20.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
@@ -150,3 +156,11 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
         }
     }
 }
+
+
+
+//actions = {
+//    IconButton(onClick = {  }) {
+//        Icon(Icons.Filled.ExitToApp, contentDescription = "Logout")
+//    }
+//}

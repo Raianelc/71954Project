@@ -1,6 +1,7 @@
 package com.stu71954.a71954project.order
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,12 +19,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.stu71954.a71954project.appViewModel.AppViewModel
 import com.stu71954.a71954project.model.Product
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun OrderDT(orderId: String, viewModel: AppViewModel = viewModel()) {
+fun OrderDT(orderId: String, navController: NavController, viewModel: AppViewModel = viewModel()) {
     LaunchedEffect(orderId) {
         viewModel.getOrderProducts(orderId)
     }
@@ -59,7 +61,7 @@ fun OrderDT(orderId: String, viewModel: AppViewModel = viewModel()) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(5.dp))
-                    OrderProductsList(orderProducts)
+                    OrderProductsList(orderProducts, navController)
                 }
             }
         }
@@ -67,16 +69,18 @@ fun OrderDT(orderId: String, viewModel: AppViewModel = viewModel()) {
 }
 
 @Composable
-fun OrderProductsList(orderProducts: List<Product>) {
+fun OrderProductsList(orderProducts: List<Product>, navController: NavController) {
     LazyColumn {
         items(items = orderProducts) { product: Product ->
-            ProductCard(product)
+            ProductCard(product, navController)
         }
     }
 }
 
+
+
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(product: Product, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,9 +91,9 @@ fun ProductCard(product: Product) {
             modifier = Modifier.padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Product Name: ${product.title}")
+            Text(text = product.title, fontSize = 20.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "Product Price: ${product.price}")
+            Text(text = product.price.toString(), fontSize = 16.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
         }
     }
 }
