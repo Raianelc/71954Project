@@ -1,6 +1,7 @@
 package com.stu71954.a71954project.appRepository
 
 import com.stu71954.a71954project.model.Product
+import com.stu71954.a71954project.model.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
@@ -83,6 +84,28 @@ class AppRepository {
         }
     }
 
+    suspend fun getUserById(id: String): User? {
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("https://fakestoreapi.com/users/$id")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                val bodyString = response.body?.string()
+                val jsonElement = Json.parseToJsonElement(bodyString ?: "")
+                return@withContext if (jsonElement is JsonObject) {
+                    User(
+                        id = jsonElement["id"]!!.jsonPrimitive.content,
+                        name = jsonElement["name"]!!.jsonPrimitive.content,
+                        // Add other user properties here
+                    )
+                } else {
+                    null
+                }
+            }
+        }
+    }
 
 
 }

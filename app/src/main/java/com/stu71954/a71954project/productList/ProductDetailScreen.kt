@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Surface
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -27,6 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 
 @Composable
@@ -76,13 +79,22 @@ fun ProductDetailScreen(productId: Int, viewModel: AppViewModel, navController: 
             }
         ) { innerPadding ->
             Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(innerPadding)) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         painter = rememberImagePainter(product.image),
                         contentDescription = product.title,
                         modifier = Modifier.fillMaxWidth()
                     )
-                    Text(text = product.description)
+
+                    Surface (
+                        modifier = Modifier.padding(8.dp),
+                        elevation = 2.dp
+
+                    ) {
+                        Text(text = product.description, fontSize = 18.sp, modifier = Modifier.padding(8.dp))
+                    }
                     Text(text = "Price: ${product.price}")
                 }
             }

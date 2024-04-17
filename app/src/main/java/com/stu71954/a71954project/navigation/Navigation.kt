@@ -10,8 +10,11 @@ import com.stu71954.a71954project.appRepository.AppRepository
 import com.stu71954.a71954project.appViewModel.AppViewModel
 import com.stu71954.a71954project.auth.AuthViewModel
 import com.stu71954.a71954project.loginUser.LoginScreen
+import com.stu71954.a71954project.order.OrderDT
+import com.stu71954.a71954project.order.OrderHistory
 import com.stu71954.a71954project.productList.ProductDetailScreen
 import com.stu71954.a71954project.productList.ProductListScreen
+import com.stu71954.a71954project.shopCart.CartScreen
 import com.stu71954.a71954project.signUp.SignUpScreen
 
 @Composable
@@ -33,14 +36,36 @@ fun Navigation() {
     {
         composable("signup") { SignUpScreen(navController = navController) }
         composable("login") { LoginScreen(navController = navController) }
-        composable("productlistscreen") { ProductListScreen(appViewModel, navController, authViewModel) }
+        composable("productlistscreen") {
+            ProductListScreen(
+                appViewModel,
+                navController,
+                authViewModel
+            )
+        }
         composable("product/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
             if (productId != null) {
                 ProductDetailScreen(productId, appViewModel, navController, authViewModel)
             }
-
+        }
+        composable("cart") {
+            CartScreen(appViewModel, navController)
+        }
+        composable("orderHistory") {
+            OrderHistory(
+                appViewModel,
+                authViewModel.getCurrentUserId()!!,
+                navController
+            )
+        }
+        composable("orderDT/{orderId}") { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId")
+            if (orderId != null) {
+                OrderDT(orderId, appViewModel)
+            }
 
         }
     }
 }
+

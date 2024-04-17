@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -94,7 +95,7 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
                     Button(onClick = { navController.navigate("orderHistory") }) {
                         Text("Orders")
                     }
-                    Button(onClick = { navController.navigate("cartScreen") }) {
+                    Button(onClick = { navController.navigate("cart") }) {
                         Text("Go to Cart")
                     }
                 }
@@ -138,7 +139,7 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
             Image(
                 painter = rememberImagePainter(product.image),
                 contentDescription = product.title,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(200.dp),
                 contentScale = ContentScale.Crop
             )
             Text(text = product.title, fontSize = 20.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })

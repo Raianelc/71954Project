@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firestore.admin.v1.Index
 import com.stu71954.a71954project.appRepository.AppRepository
+import com.stu71954.a71954project.model.CartItem
 import com.stu71954.a71954project.model.Product
+import com.stu71954.a71954project.model.UserOrder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -30,9 +33,71 @@ class AppViewModel (private val repository: AppRepository, private val navContro
     private val _product = MutableStateFlow<Product?>(null)
     val product: StateFlow<Product?> = _product
 
+    private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
+    val cartItems: StateFlow<List<CartItem>> = _cartItems
+
+    private val _totalAmount = MutableStateFlow<Double>(0.0)
+    val totalAmount: StateFlow<Double> = _totalAmount
+
+    private val _cartProducts = MutableStateFlow<List<Product>>(emptyList())
+    val cartProducts: StateFlow<List<Product>> = _cartProducts
+
+    private val _orders = MutableStateFlow<List<UserOrder>>(emptyList())
+    val orders: StateFlow<List<UserOrder>> = _orders
+
+    private val _orderProducts = MutableStateFlow<List<Product>>(emptyList())
+    val orderProducts: StateFlow<List<Product>> = _orderProducts
+
+    private val _orderdt = MutableStateFlow<UserOrder?>(null)
+
+
+    suspend fun fetchProductsByIdForOrders(productIds: List<Int>): List<Product> {
+        return productIds.mapNotNull { id ->
+            repository.fetchProductByIdFromApi(id)
+        }
+    }
+
+
     fun getProduct(id: Int) {
         viewModelScope.launch {
             _product.value = products.value.find { it.id == id } }}
+
+    fun placeOrder(userId: String) {
+        val userRef = db.collection("users").document(userId)
+        userRef.get().addOnSuccessListener { document ->
+            val cart = document.get("cart") as Map<*, *>
+            val items = cart["items"] as List<Map<String, Any>>
+            val total = cart["total"] as Double
+
+            // Check if the cart is empty
+            if (items.isEmpty()) {
+                return@addOnSuccessListener
+            }
+
+            // Create a new order
+            val order = hashMapOf(
+                "userId" to userId,
+                "items" to items,
+                "total" to total
+            )
+
+            // Add a new document with a generated ID
+            db.collection("orders").add(order).addOnSuccessListener {
+                // Clear the user's cart
+                userRef.update(
+                    "cart.items", emptyList<Map<String, Any>>(),
+                    "cart.total", 0.0
+                ).addOnSuccessListener {
+                    _cartProducts.value = emptyList()
+                    _totalAmount.value = 0.0
+                    _cartCount.value = 0
+
+                    // Navigate back to ProductListScreen
+                    navController.navigate("productlistscreen")
+                }
+            }
+        }
+    }
 
     init {
         getProducts()
@@ -136,5 +201,86 @@ class AppViewModel (private val repository: AppRepository, private val navContro
             }
 
     }
+
+    fun fetchCartProducts(userId: String) {
+        val userRef = db.collection("users").document(userId)
+        userRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val cart = document.get("cart") as Map<*, *>
+                    val items = cart["items"] as List<Map<String, Any>>
+                    val productIds = items.map { it["id"] as Long }.map { it.toInt() } // Convert to Int
+                    fetchProductsByIds(productIds)
+                }
+            }
+    }
+
+    private fun fetchProductsByIds(ids: List<Int>) {
+        viewModelScope.launch {
+            val products = ids.mapNotNull { id ->
+                repository.fetchProductByIdFromApi(id)
+            }
+            _cartProducts.value = products
+            _totalAmount.value = products.sumByDouble { it.price }}
+    }
+
+    fun removeFirstProductFromCart(userId: String, product: Product) {
+    val userRef = db.collection("users").document(userId)
+    userRef.get()
+        .addOnSuccessListener { document ->
+            if (document.exists()) {
+                val cart = document.get("cart") as Map<*, *>
+                val items = cart["items"] as List<Map<String, Any>>
+                val itemIndex = items.indexOfFirst { (it["id"] as Long).toInt() == product.id }
+                if (itemIndex != -1) {
+                    // Product is in the cart, remove the first occurrence
+                    val newItems = items.toMutableList()
+                    newItems.removeAt(itemIndex)
+                    userRef.update(
+                        "cart.items", newItems,
+                        "cart.total", FieldValue.increment(-product.price)
+                    ).addOnSuccessListener {
+                        getCartCount(userId)
+                        fetchCartProducts(userId) // Fetch the updated cart products
+                    }
+                }
+            }
+        }
+    }
+
+    fun fetchUserOrders(userId: String) {
+        db.collection("orders")
+            .whereEqualTo("userId", userId)
+            .get()
+            .addOnSuccessListener { documents ->
+                val orders = documents.map { document ->
+                    UserOrder(
+                        id = document.id,
+                        userId = document.get("userId") as String,
+                        items = document.get("items") as List<Map<String, Any>>,
+                        total = document.get("total") as Double
+                    )
+                }
+                _orders.value = orders
+            }
+    }
+
+    fun getOrderProducts(orderId: String) {
+        val orderRef = db.collection("orders").document(orderId)
+
+        orderRef.get().addOnSuccessListener { document ->
+            val items = document.get("items") as? List<*>
+
+            val productIds = items?.mapNotNull { ((it as? Map<String, Any>)?.get("id") as? Long)?.toInt() }
+
+            if (productIds != null) {
+                viewModelScope.launch {
+                    val products = fetchProductsByIdForOrders(productIds)
+                    _orderProducts.value = products
+                }
+            }
+        }
+    }
+
 
 }
