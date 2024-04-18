@@ -11,6 +11,8 @@ composeBom = "2023.08.00"
 googleServices = "4.4.1"
 firebaseAnalytics = "21.6.1"
 navigationCompose = "2.7.7"
+material = "1.11.0"
+composeMaterial3 = "1.0.0-alpha20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,6 +32,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebaseAnalytics" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

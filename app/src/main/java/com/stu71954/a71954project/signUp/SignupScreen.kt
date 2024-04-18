@@ -24,7 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
@@ -63,6 +65,16 @@ fun SignUpScreen(navController: NavController) {
                 .align(Alignment.CenterHorizontally)
                 .padding(vertical = 16.dp) // Adjusted padding
         )
+
+        Text(
+            text = "SIGN UP",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            fontSize = 24.sp,
+            color = Color(0xFF1C486F),
+            fontWeight = FontWeight.Bold
+        )
+
         OutlinedTextField(
             value = username,
             onValueChange = { username = it },
@@ -73,7 +85,9 @@ fun SignUpScreen(navController: NavController) {
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 16.dp)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 16.dp)
         )
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally),
