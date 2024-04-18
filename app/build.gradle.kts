@@ -65,6 +65,10 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.github.javafaker:javafaker:1.0.2")
     implementation("androidx.compose.material:material:1.1.0")
+    implementation ("androidx.compose.material:material-icons-extended")
+    implementation("io.coil-kt:coil-compose:1.4.0")
+
+
 
 
 
