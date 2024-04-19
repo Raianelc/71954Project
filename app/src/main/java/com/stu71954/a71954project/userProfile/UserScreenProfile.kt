@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -29,10 +33,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.stu71954.a71954project.appViewModel.AppViewModel
+import com.stu71954.a71954project.auth.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreenProfile(userId: String, viewModel: AppViewModel, navController: NavController) {
+fun UserScreenProfile(userId: String, viewModel: AppViewModel, navController: NavController, authViewModel: AuthViewModel) {
     val userDetails by viewModel.user.collectAsState(null)
 
     LaunchedEffect(userId) {
@@ -46,7 +51,16 @@ fun UserScreenProfile(userId: String, viewModel: AppViewModel, navController: Na
                     containerColor = Color(0xFF154670),
                     titleContentColor = colors.onPrimary
                 ),
-                title = { Text("User Profile") }
+                title = { Text("My Profile") },
+            actions = {
+                IconButton(onClick = { authViewModel.logout(navController) }) {
+                    Icon(
+                        Icons.Filled.ExitToApp,
+                        contentDescription = "Logout",
+                        tint = Color(0xFFFFFFFF)
+                         )
+                     }
+                 }
             )
         },
         content = { innerPadding ->
@@ -75,6 +89,7 @@ fun UserScreenProfile(userId: String, viewModel: AppViewModel, navController: Na
                 ) {
                     Text("About this App")
                 }
+
             }
         }
     )

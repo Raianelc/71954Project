@@ -72,7 +72,7 @@ fun Navigation() {
         composable("userProfile/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId")
             if (userId != null) {
-                UserScreenProfile(userId, appViewModel, navController)
+                UserScreenProfile(userId, appViewModel, navController, authViewModel)
             }
         }
         composable ("aboutThisApp") {

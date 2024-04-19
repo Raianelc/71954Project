@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.BottomAppBar
@@ -17,7 +19,10 @@ import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -61,6 +66,7 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
     val userId = authViewModel.getCurrentUserId()
     var selectedCategory by remember { mutableStateOf("") }
 
+
     // Fetch the categories when the screen is displayed
     LaunchedEffect(Unit) {
         viewModel.fetchCategories()
@@ -87,13 +93,6 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
                     )
                 },
                 actions = {
-                    IconButton(onClick = { authViewModel.logout(navController) }) {
-                        Icon(
-                            Icons.Filled.ExitToApp,
-                            contentDescription = "Logout",
-                            tint = Color(0xFFFFFFFF)
-                        )
-                    }
                     IconButton(onClick = { navController.navigate("userProfile/${authViewModel.getCurrentUserId()}") }) {
                         Icon(Icons.Default.AccountCircle, contentDescription = "User Details", tint = Color(0xFFFFFFFF))
                     }
@@ -120,7 +119,6 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
                     )
                     Button(
                         colors = buttonColors(containerColor = Color(0xFFEF8121)),
-
                         onClick = { navController.navigate("orderHistory") }) {
                         Text("Orders")
                     }
@@ -147,12 +145,23 @@ fun ProductListScreen(viewModel: AppViewModel, navController: NavController, aut
     }
 }
 
+
 @Composable
 fun Spinner(items: List<String>, selectedItem: String, onItemSelected: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     Box {
-        Text(if (selectedItem.isEmpty()) "Choose category" else selectedItem, Modifier.clickable { expanded = true })
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(if (selectedItem.isEmpty()) "Choose category" else selectedItem, Modifier.clickable { expanded = !expanded })
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                Modifier.clickable { expanded = !expanded }
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ){
             items.forEach { item ->
                 DropdownMenuItem(onClick = {
                     expanded = false
@@ -165,6 +174,7 @@ fun Spinner(items: List<String>, selectedItem: String, onItemSelected: (String) 
     }
 }
 
+
 @Composable
 fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navController: NavController) {
     Card(
@@ -176,9 +186,9 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
         ),
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth(),
+            .size(500.dp, 390.dp)
     ){
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(16.dp).fillMaxWidth().fillMaxHeight(), horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.SpaceBetween) {
             Image(
                 painter = rememberImagePainter(product.image),
                 contentDescription = product.title,
@@ -187,26 +197,28 @@ fun ProductCard(product: Product, onAddToCartClick: (Product) -> Unit, navContro
                     .height(200.dp),
                 contentScale = ContentScale.Crop
             )
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
+
                 Text(
                     fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                     color = Color(0xFF000000),
                     text = product.title, fontSize = 17.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
 
                 Text(
-                    color = Color(0xFF000000),
-                    text = "€${product.price.toString()}", fontSize = 16.sp, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
-            }
-            Button(
-                colors = buttonColors(containerColor = Color(0xFFEF8121)),
-                onClick = { onAddToCartClick(product) }
-            ) {
-                Text(
-                    fontSize = 16.sp,
-                    text = "Add to Cart")
+                    color = Color(0xFF727274),
+                    text = "€${product.price.toString()}", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.clickable { navController.navigate("product/${product.id}") })
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start,
+            ){
+                Button(
+                    colors = buttonColors(containerColor = Color(0xFFEF8121)),
+                    onClick = { onAddToCartClick(product) }
+                ) {
+                    Text(
+                        fontSize = 16.sp,
+                        text = "Add to Cart"
+                    )
+                }
             }
         }
     }
