@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
@@ -52,6 +53,14 @@ fun UserScreenProfile(userId: String, viewModel: AppViewModel, navController: Na
                     titleContentColor = colors.onPrimary
                 ),
                 title = { Text("My Profile") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            tint = Color(0xFFFFFFFF),
+                            contentDescription = "Back")
+                    }
+                },
             actions = {
                 IconButton(onClick = { authViewModel.logout(navController) }) {
                     Icon(

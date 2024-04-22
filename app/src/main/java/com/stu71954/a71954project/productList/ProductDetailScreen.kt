@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,10 +55,13 @@ fun ProductDetailScreen(productId: Int, viewModel: AppViewModel, navController: 
                         containerColor = Color(0xFF154670),
                         titleContentColor = colors.onPrimary
                     ),
-                    title = { Text(text = product.title) },
+                    title = { Text(fontSize = 14.sp, text = product.title) },
                     navigationIcon = {
                         IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                            Icon(
+                                Icons.Filled.ArrowBack,
+                                tint = Color(0xFFFFFFFF),
+                                contentDescription = "Back")
                         }
                     }
                 )
@@ -117,7 +121,7 @@ fun ProductDetailScreen(productId: Int, viewModel: AppViewModel, navController: 
 
                     Surface (
                         modifier = Modifier.padding(8.dp),
-                        elevation = 2.dp
+                        elevation = 1.dp
 
                     ) {
                         Text(text = product.description, fontSize = 18.sp, modifier = Modifier.padding(8.dp))
@@ -125,7 +129,7 @@ fun ProductDetailScreen(productId: Int, viewModel: AppViewModel, navController: 
                     Text(
                         fontFamily = MaterialTheme.typography.h2.fontFamily,
                         color = Color(0xFF000000),
-                        text = "Price: €${String.format("%.2f", product.price)}"
+                        text = "€${String.format("%.2f", product.price)}"
                     )
                 }
             }

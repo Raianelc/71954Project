@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults.buttonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -44,7 +46,16 @@ fun AboutThisAppScreen(navController: NavController) {
                     containerColor = Color(0xFF154670),
                     titleContentColor = colors.onPrimary
                 ),
-                title = { Text("About This App") }
+                title = { Text("About This App") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            tint = Color(0xFFFFFFFF)
+                        )
+                    }
+                }
             )
         },
         content = { innerPadding ->
@@ -59,10 +70,14 @@ fun AboutThisAppScreen(navController: NavController) {
                 Text(text = "App Version: 1.0.0", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(text = "Developed by: Raiane Lopes", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 Text(text = "Contact: raianelopes88@gmail.com", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-
                 SocialMediaIcons()
                 Spacer(modifier = Modifier.padding(10.dp))
-                Text(text = "This app was developed as a project for the Mobile App Development course at Dorset College.", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    modifier = Modifier.padding(5.dp),
+                    text = "This app was developed as a project for the Mobile App Development course at Dorset College.",
+                    fontSize = 17.sp,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.SemiBold)
                 Button(
                     colors = buttonColors(containerColor = Color(0xFFEF8121)),
                     onClick = { navController.navigate("productlistscreen") }

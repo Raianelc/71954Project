@@ -2,19 +2,25 @@ package com.stu71954.a71954project.order
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -52,7 +58,16 @@ fun OrderHistory(viewModel: AppViewModel, userId: String, navController: NavCont
                     containerColor = Color(0xFF154670),
                     titleContentColor = colors.onPrimary
                 ),
-                title = { Text("Order History") }
+                title = { Text("Order History") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.Filled.ArrowBack,
+                            tint = Color(0xFFFFFFFF),
+                            contentDescription = "Back"
+                        )
+                    }
+                }
             )
         },
         content = {
@@ -89,13 +104,14 @@ fun OrderCard(order: UserOrder, onClick: () -> Unit) {
         ),
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp)
+            .clickable(onClick = onClick)
+            .size(500.dp, 100.dp),
+        shape = RoundedCornerShape(16.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
@@ -105,7 +121,7 @@ fun OrderCard(order: UserOrder, onClick: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 color = Color(0xFF000000),
-                text = "Total: ${order.total}", fontSize = 16.sp
+                text = "Total: €${String.format("%.2f", order.total)}", fontSize = 16.sp
             )
         }
     }
